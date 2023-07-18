@@ -1,0 +1,30 @@
+{% include 'tickets\navbar.html' %}
+
+{% if user.is_authenticated %}
+{% load auth_extras %}
+    Hi {{ user.username }}!
+    {% if request.user|has_group:"Staff" %} 
+    <p>You belong to Staff</p> 
+    {% endif %}
+    {% if ticketsCreatedByUser %}
+    <ul>
+        {% for ticket in ticketsCreatedByUser %}
+            <li>
+                {{ ticket.id }} - {{ ticket.title }} <a href="{% url 'ticket' ticket.id %}">Check</a>
+                
+                {% if request.user|has_group:"Staff" %} 
+                <a href="{% url 'editTicketForStaff' ticket.id %}">Edit ticket</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>No tickets created by you.</p>
+    {% endif %}
+    <p>Your Location: {{ user.userprofile.locationType }}</p>
+    
+{% endif %}
+
+
+</body>
+</html>

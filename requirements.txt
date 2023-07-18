@@ -1,0 +1,3 @@
+django
+django-smart-selects
+django-bootstrap-v5
