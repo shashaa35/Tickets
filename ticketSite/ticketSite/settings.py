@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure--_dtr%c1r&6dp42=0)e^)lwhp+_%n-3-wd2(trt)w_b%4aagm1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.4', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['192.168.1.2', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'ticketApp',
     'users',
     'bootstrap5',
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -126,8 +128,11 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = 'index'
+LOGIN_REDIRECT_URL = 'ticketsHome'
 LOGIN_URL = 'login'
+
+LOGOUT_REDIRECT_URL = 'login'
+
 USE_DJANGO_JQUERY = True
 
 LOGGING = {
@@ -158,3 +163,6 @@ LOGGING = {
         },
     },
 }
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"

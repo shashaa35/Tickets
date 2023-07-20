@@ -1,17 +1,24 @@
-<h3>Register here</h3>
-<hr>
-
-<form action="" method="POST">
-    {% csrf_token %}
-
-    {% for field in form %}
-        <div>
-            <p>{{ field.label }}: <br> {{ field }}</p> 
-
-            {% for error in field.errors %}
-                <small style="color: red">{{ error }}</small>
-            {% endfor %}
+{% include 'tickets\navbar.html' %}
+{% load auth_extras %}
+{%load crispy_forms_tags %} 
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 login-form">
+                <!-- Sign up Form -->
+                <form action="" method="POST">
+                    <h2 class="mb-3 text-center">Signup</h2>
+                    {% csrf_token %}
+                    <form action="" method="POST" class="">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="login-btn-container">
+                            <button type="submit" class="btn btn-primary px-4">Register</button>
+                        </div>
+                    </form>
+                </form>
+            </div>
         </div>
-    {% endfor %}
-    <button type="submit">Register</button>
-</form>
+    </div>
+</body>
+
+</html>

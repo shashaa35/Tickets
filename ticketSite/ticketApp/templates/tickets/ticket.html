@@ -1,27 +1,45 @@
+{% include 'tickets\navbar.html' %}
+{% load auth_extras %}
 {% if user.is_authenticated %}
-    Hi {{ user.username }}!
-    <a href="{% url 'index' %}">Ticket home page</a>
-    {% if ticket_details %}
-    <table>
-        <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Location</th>
-            <th>Created By</th>
-            <th>Status</th>
-        </tr>
-        <tr>
-            <td>{{ ticket_details.title }}</td>
-            <td>{{ ticket_details.description }}</td>
-            <td>{{ user_details.userprofile.locationType }}</td>
-            <td>{{ ticket_details.created_by }}</td>
-            <td>{{ ticket_details.status }}</td>
-        </tr>
-    </table>
-    {% else %}
-        <p>No tickets created by you.</p>
+    
+    {% if request.user|has_group:"Staff" %} 
+    <p>You belong to Staff</p> 
     {% endif %}
-    <div class="alert alert-success" role="alert">
-        <a href="{% url 'logout' %}">Logout?</a>
-    </div>
+    <p>Your Location: {{ user.userprofile.locationType }}</p>
+
+    <div class="container">
+        {% if ticket_details %}
+        <table id="dataTable" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Address</th>
+                    <th>Status</th>
+                    <th>Operation</th>
+                    <!-- Add more table headers as needed -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ ticket_details.id }}</td>
+                    <td>{{ ticket_details.title }}</td>
+                    <td>{{ ticket_details.address }}</td>
+                    <td>{{ ticket_details.status }}</td>
+                    <td>
+                        {% if request.user|has_group:"Staff" %} 
+                            <a href="{% url 'editTicketForStaff' ticket_details.id %}">Edit ticket</a>
+                        {% endif %}
+                    </td>
+                    <!-- This seems to be a hardcoded value. Should it be {{ ticket.age }}? -->
+                    <!-- Add more table rows as needed -->
+                </tr>
+            </tbody>
+        </table>
+    {% endif %}
+        </div>
 {% endif %}
+
+
+</body>
+</html>

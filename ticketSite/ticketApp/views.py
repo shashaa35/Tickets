@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 # tickets home page
 @login_required(login_url='login/')
 def index(request):
+    # return "hello"
     return render(request, 'tickets/index.html')
 
 # get all tickets created by the user
@@ -52,7 +53,7 @@ def createTicket(request):
             ticket = form.save(commit=False)
             ticket.created_by = request.user
             ticket.save()
-            return redirect('ticketList')
+            return redirect('tickets/ticketList')
         else:
             context = {
                 'form': form
@@ -74,7 +75,7 @@ def editTicketForStaff(request, ticket_id):
         form = TicketUpdateForm(request.POST, request.FILES, instance=ticket)
         if form.is_valid():
             form.save()
-            return redirect('ticketList')
+            return redirect('tickets/ticketList')
         else:
             context = {
                 'form': form

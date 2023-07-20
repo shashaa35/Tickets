@@ -25,12 +25,15 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('', user_views.home, name='home'),
-
     path('register/', user_views.register, name='register'),
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
+    path('logout/', auth_views.LogoutView.as_view(template_name='users/login.html'), name='logout'),
 
-    path('tickets/', include("ticketApp.urls")),
+    # path("tickets/", ticketApp_views.index, name="ticketsHome"),
+    path("tickets/", ticketApp_views.ticketList, name="ticketsHome"),
+    path("tickets/ticket/<int:ticket_id>", ticketApp_views.ticket, name="ticket"),
+    path("tickets/createTicket", ticketApp_views.createTicket, name="createTicket"),
+    path("tickets/editTicketForStaff/<int:ticket_id>", ticketApp_views.editTicketForStaff, name="editTicketForStaff"),
 
     path('chaining/', include('smart_selects.urls')),
 ]

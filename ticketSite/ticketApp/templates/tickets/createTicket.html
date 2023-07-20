@@ -1,48 +1,22 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Create new ticket</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <style>
-      .AAE{
-        text-decoration: underline;
-        text-underline-offset: 0.8rem;
-        text-decoration-thickness: 0.15rem;
-      }
-      .form-cont{
-        width: 50rem;
-        font-weight: 600;
-      }
-      .form-cont input, .form-cont select{
-        border: 0.05rem solid black;
-      }
-    </style>
-  </head>
-  <body>
-    {% if messages %}
-    {% for message in messages %}
-    <div class="alert alert-{{message.tags}} alert-dismissible fade show my-2"  role="alert">
-      <strong>{{message}}</strong>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    {% endfor %}
-    {% endif %}
+{% include 'tickets\navbar.html' %}
 
-    <h1 class="text-center my-2 AAE">Add a ticket</h1>
-    <div class="container form-cont my-5">
-      <form action="" method="post">        
-        {% csrf_token %}
-        {{ form.media.js }}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary float-end my-2">Add Complaint</button>
-      </form>
-      
+{%load crispy_forms_tags %} 
+{% load auth_extras %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 login-form">
+                <!-- Sign up Form -->
+                <h2 class="mb-3 text-center">Complaint</h2>
+                {% csrf_token %}
+                <form action="" method="POST" class="">
+                    {% csrf_token %}
+                    {{ form.media.js }}
+                    {{ form|crispy }}
+                    <div class="login-btn-container">
+                        <button type="submit" class="btn btn-primary px-4">Create Complaint</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-
-    
-      
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-  </body>
-</html>
+</body>

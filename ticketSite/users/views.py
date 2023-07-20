@@ -6,7 +6,9 @@ from .models import UserProfile
 from django.contrib.auth.models import User
 
 def home(request):
-    return render(request, 'users/home.html')
+    if request.user.is_authenticated:
+        return redirect('ticketsHome')
+    return redirect('login')
 
 def register(request):
     if request.method == 'POST':
