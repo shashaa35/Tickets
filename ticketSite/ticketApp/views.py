@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import TicketForm, TicketUpdateForm
 from .models import Ticket, ProblemType, TicketStatus, ProblemSubtype
 from django.contrib.auth.models import User
+from users.models import UserProfile
 import logging
 
 logger = logging.getLogger(__name__)
@@ -19,12 +20,14 @@ def index(request):
 def ticketList(request):
     if request.user.groups.filter(name = 'Staff').exists():
         ticketsCreatedByUser = Ticket.objects.all()
+        user_profiles = UserProfile.objects.all()
     else:
         ticketsCreatedByUser = Ticket.objects.filter(created_by=request.user)
-    user = request.user
+        user_profiles = UserProfile.objects.filter(user=request.user)
+    for ticket in ticketsCreatedByUser:
+        ticket.user_profile = user_profiles.get(user=ticket.created_by)
     context = {
-        'ticketsCreatedByUser': ticketsCreatedByUser,
-        'user': user
+        'ticketsCreatedByUser': ticketsCreatedByUser
     }
     return render(request, 'tickets/ticketList.html', context)
 
@@ -33,15 +36,14 @@ def ticketList(request):
 def ticket(request, ticket_id):
     if request.user.groups.filter(name = 'Staff').exists():
         ticket_details = Ticket.objects.get(id=ticket_id)
+        user_profiles = UserProfile.objects.all()
     else:
         ticket_details = Ticket.objects.get(id=ticket_id, created_by=request.user)
-    user_details = User.objects.get(id=ticket_details.created_by.id)
+        user_profiles = UserProfile.objects.filter(user=request.user)
+    ticket_details.user_profile = user_profiles.get(id=ticket_details.created_by.id)
     context = {
-        'ticket_details': ticket_details,
-        'user_details': user_details
+        'ticket_details': ticket_details
     }
-    print(ticket_details)
-    print(user_details.userprofile.locationType)
     return render(request, 'tickets/ticket.html', context)
 
 # create a new ticket
@@ -53,7 +55,7 @@ def createTicket(request):
             ticket = form.save(commit=False)
             ticket.created_by = request.user
             ticket.save()
-            return redirect('tickets/ticketList')
+            return redirect('/tickets')
         else:
             context = {
                 'form': form
@@ -75,7 +77,7 @@ def editTicketForStaff(request, ticket_id):
         form = TicketUpdateForm(request.POST, request.FILES, instance=ticket)
         if form.is_valid():
             form.save()
-            return redirect('tickets/ticketList')
+            return redirect('/tickets')
         else:
             context = {
                 'form': form

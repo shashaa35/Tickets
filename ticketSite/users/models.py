@@ -21,3 +21,6 @@ class UserProfile(models.Model):
     phone = models.CharField(validators=[phone_regex], max_length=10)
     address = models.CharField(max_length=101)
     locationType = models.CharField(max_length=101)
+
+    def __str__(self):
+        return self.name
