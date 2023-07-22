@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import TicketForm, TicketUpdateForm
 from .models import Ticket, ProblemType, TicketStatus, ProblemSubtype
 from django.contrib.auth.models import User
-from users.models import UserProfile
+from users.models import CustomUser
 import logging
 
 logger = logging.getLogger(__name__)
@@ -18,14 +18,20 @@ def index(request):
 # get all tickets created by the user
 @login_required(login_url='login')
 def ticketList(request):
-    if request.user.groups.filter(name = 'Staff').exists():
+    if request.user.is_superuser:
         ticketsCreatedByUser = Ticket.objects.all()
-        user_profiles = UserProfile.objects.all()
+        user_profiles = CustomUser.objects.all()
+    elif request.user.groups.filter(name = 'Staff').exists():
+        location_of_staff = CustomUser.objects.get(id=request.user.id).locationType
+        ticketsCreatedByUser = Ticket.objects.filter(created_by__userprofile__locationType=location_of_staff)
+        user_profiles = CustomUser.objects.filter(locationType=location_of_staff)
     else:
         ticketsCreatedByUser = Ticket.objects.filter(created_by=request.user)
-        user_profiles = UserProfile.objects.filter(user=request.user)
+        user_profiles = CustomUser.objects.filter(id=request.user.id)
     for ticket in ticketsCreatedByUser:
-        ticket.user_profile = user_profiles.get(user=ticket.created_by)
+        print(request.user.id)
+        print(user_profiles.get(id=ticket.created_by.id))
+        ticket.user_profile = user_profiles.get(id=ticket.created_by.id)
     context = {
         'ticketsCreatedByUser': ticketsCreatedByUser
     }
@@ -36,10 +42,10 @@ def ticketList(request):
 def ticket(request, ticket_id):
     if request.user.groups.filter(name = 'Staff').exists():
         ticket_details = Ticket.objects.get(id=ticket_id)
-        user_profiles = UserProfile.objects.all()
+        user_profiles = CustomUser.objects.all()
     else:
         ticket_details = Ticket.objects.get(id=ticket_id, created_by=request.user)
-        user_profiles = UserProfile.objects.filter(user=request.user)
+        user_profiles = CustomUser.objects.filter(id=request.user.id)
     ticket_details.user_profile = user_profiles.get(id=ticket_details.created_by.id)
     context = {
         'ticket_details': ticket_details

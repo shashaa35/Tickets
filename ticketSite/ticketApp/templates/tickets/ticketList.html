@@ -2,16 +2,19 @@
 {% load auth_extras %}
 {% if user.is_authenticated %}
 <br>
-    <div class="container">
+<div class="container-fluid">
+    <div class="table-responsive">
         {% if ticketsCreatedByUser %}
-        <table id="dataTable" class="table table-bordered table-hover">
+        <table id="example" class="table table-bordered table-hover">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Title</th>
-                    <th>Address</th>
+                    <th>Problem Type</th>
+                    <th>Problem Subtype</th>
+                    <th class="d-none d-lg-table-cell">Address</th>
                     <th>Location</th>
                     <th>Created by</th>
+                    <th>Created at</th>
                     <th>Status</th>
                     <th>Operation</th>
                     <!-- Add more table headers as needed -->
@@ -21,15 +24,17 @@
                 {% for ticket in ticketsCreatedByUser %}
                 <tr>
                     <td>{{ ticket.id }}</td>
-                    <td>{{ ticket.title }}</td>
-                    <td>{{ ticket.address }}</td>
+                    <td>{{ ticket.problemType }}</td>
+                    <td>{{ ticket.problemSubtype }}</td>
+                    <td class="d-none d-lg-table-cell">{{ ticket.address }}</td>
                     <td>{{ ticket.user_profile.locationType}}</td>
-                    <td>{{ ticket.created_by.username}}</td>
+                    <td>{{ ticket.created_by.name}}</td>
+                    <td>{{ ticket.created_at }}</td>
                     <td>{{ ticket.status }}</td>
                     <td>
-                        <a href="{% url 'ticket' ticket.id %}">Check</a>
+                        <a class="btn btn-outline-info" href="{% url 'ticket' ticket.id %}">Check</a>
                         {% if request.user|has_group:"Staff" %} 
-                            <a href="{% url 'editTicketForStaff' ticket.id %}">Edit ticket</a>
+                            <a class="btn btn-outline-warning" href="{% url 'editTicketForStaff' ticket.id %}">Edit ticket</a>
                         {% endif %}
                     </td>
                     <!-- This seems to be a hardcoded value. Should it be {{ ticket.age }}? -->
@@ -43,7 +48,70 @@
     {% endif %}
         </div>
 {% endif %}
+</div>
 
-
+<script>
+$(document).ready(function () {
+    // Setup - add a text input to each footer cell
+    $('#example thead tr')
+        .clone(true)
+        .addClass('filters')
+        .appendTo('#example thead');
+ 
+    var table = $('#example').DataTable({
+        orderCellsTop: true,
+        fixedHeader: true,
+        initComplete: function () {
+            var api = this.api();
+ 
+            // For each column
+            api
+                .columns()
+                .eq(0)
+                .each(function (colIdx) {
+                    // Set the header cell to contain the input element
+                    var cell = $('.filters th').eq(
+                        $(api.column(colIdx).header()).index()
+                    );
+                    var title = $(cell).text();
+                    $(cell).html('<input type="text" placeholder="' + title + '" />');
+ 
+                    // On every keypress in this input
+                    $(
+                        'input',
+                        $('.filters th').eq($(api.column(colIdx).header()).index())
+                    )
+                        .off('keyup change')
+                        .on('change', function (e) {
+                            // Get the search value
+                            $(this).attr('title', $(this).val());
+                            var regexr = '({search})'; //$(this).parents('th').find('select').val();
+ 
+                            var cursorPosition = this.selectionStart;
+                            // Search the column for that value
+                            api
+                                .column(colIdx)
+                                .search(
+                                    this.value != ''
+                                        ? regexr.replace('{search}', '(((' + this.value + ')))')
+                                        : '',
+                                    this.value != '',
+                                    this.value == ''
+                                )
+                                .draw();
+                        })
+                        .on('keyup', function (e) {
+                            e.stopPropagation();
+ 
+                            $(this).trigger('change');
+                            $(this)
+                                .focus()[0]
+                                .setSelectionRange(cursorPosition, cursorPosition);
+                        });
+                });
+        },
+    });
+});
+</script>
 </body>
 </html>

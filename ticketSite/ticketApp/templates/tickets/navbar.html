@@ -7,7 +7,7 @@
   {% bootstrap_javascript %}
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  
   <style>
       /* Add custom CSS to center the login button */
       .login-btn-container {
@@ -20,37 +20,53 @@
           padding: 20px;
           border-radius: 5px;
       }
+      thead input {
+        width: 100%;
+      }
   </style>
+<script src="https://code.jquery.com/jquery-3.5.1.js"  crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" 
+  href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.css">
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.js"></script>
+  
 </head>
 <body>
   {%load crispy_forms_tags %} 
   {% load auth_extras %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar</a>
+      <a class="navbar-brand" href="#">Railway Civil complaint</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            {% if user.is_authenticated %}
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="{% url 'ticketsHome' %}">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="{% url 'createTicket' %}">New Complaint</a>
-              </li>
-            {% endif %}
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'ticketsHome' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'createTicket' %}">New Complaint</a>
+          </li>
         </ul>
-        <form class="d-flex">
-          <!-- <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"> -->
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex">
           {% if user.is_authenticated %}
-            <p class="navbar-text" aria-current="page">Hi {{ user.username }}!  </p>
-            <button class="btn btn-outline-success"><a class="nav" href="{% url 'logout' %}">Logout</a></button>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Hi {{ user.name }}!
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="{% url 'editProfile' %}">Edit profile</a>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+              </ul>
+            </li>
           {% else %}
-            <button class="btn btn-outline-success"><a class="nav" href="{% url 'login' %}">Login</a></button>
+            <li class="nav-item">
+              <a class="nav-link" href="#" tabindex="-1" aria-current="page" href="{% url 'login' %}">Login</a>
+            </li>
           {% endif %}
-        </form>
+        </ul>
       </div>
     </div>
   </nav>
