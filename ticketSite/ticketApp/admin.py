@@ -1,17 +1,13 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
-from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-
 from users.models import CustomUser
 from users.forms import CustomUserCreationForm, CustomUserChangeForm
-# Register your models here.
 from .models import Ticket, ProblemType, ProblemSubtype
+from django.contrib.auth.models import Group 
 
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
-    list_display = ('id', 'get_locationType', 'description', 'created_by','updated_at')
+    list_display = ('id', 'get_locationType', 'description', 'created_by', 'problemType', 'problemSubtype', 'updated_at')
     search_fields = ['status']
 
     def get_locationType(self, instance):
@@ -31,8 +27,14 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
-    list_display = ("phone", "is_staff", "is_active",)
-    list_filter = ("phone", "is_staff", "is_active",)
+    list_display = ("name", "locationType", "phone", "get_is_staffMember")
+    list_filter = ("phone", "name", "locationType",)
+
+    def get_is_staffMember(self, instance):
+        return Group.objects.get(name='Staff') in instance.groups.all()
+    
+    get_is_staffMember.short_description = 'Staff Member'
+
     fieldsets = (
         (None, {"fields": ("phone", "password", "name", "address", "locationType")}),
         ("Permissions", {"fields": ("is_staff", "is_active", "groups", "user_permissions")}),
@@ -47,6 +49,6 @@ class CustomUserAdmin(UserAdmin):
         ),
     )
     search_fields = ("phone",)
-    ordering = ("phone",)
+    ordering = ("name",)
 
 admin.site.register(CustomUser, CustomUserAdmin)

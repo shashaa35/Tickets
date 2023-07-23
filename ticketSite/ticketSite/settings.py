@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure--_dtr%c1r&6dp42=0)e^)lwhp+_%n-3-wd2(trt)w_b%4aagm1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.2', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['192.168.1.5', '192.168.1.2', 'localhost', '127.0.0.1', '*']
 
 
 # Application definition
@@ -142,24 +142,39 @@ LOGGING = {
     'disable_existing_loggers': False,
     # django uses some of its own loggers for internal operations. In case you want to disable them just replace the False above with true.
     # A handler for WARNING. It is basically writing the WARNING messages into a file called WARNING.log
+    'formatters': {
+        'console': {
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+        },
+        'file': {
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+        }
+    },
     'handlers': {
         'file': {
             'level': 'WARNING',
             'class': 'logging.FileHandler',
             'filename': BASE_DIR / 'warning.log',
+            'formatter': 'file'
         },
         'file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
             'filename': BASE_DIR / 'info.log',
+            'formatter': 'file'
         },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'console'
+        }
     },
     # A logger for WARNING which has a handler called 'file'. A logger can have multiple handler
     'loggers': {
        # notice the blank '', Usually you would put built in loggers like django or root here based on your needs
         '': {
-            'handlers': ['file'], #notice how file variable is called in handler which has been defined above
-            'level': 'WARNING',
+            'handlers': ['file', 'console'], #notice how file variable is called in handler which has been defined above
+            'level': 'DEBUG',
             'propagate': True,
         },
     },

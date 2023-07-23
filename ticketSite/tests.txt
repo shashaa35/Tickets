@@ -1,0 +1,15 @@
+Tests need to be executed:
+=> User app
+    => Sign up
+    => Login
+    => Assign Staff privilege to a user from admin portal
+    => edit a profile
+
+=> Tickets app
+    => Create a Ticket
+    => List ticket
+    => Check a ticket
+    => edit a ticket
+    => update the status of the ticket
+    => Staff user should be able to see the ticket for his location only.
+    => create new problem_type , problemSubtype from admin portal

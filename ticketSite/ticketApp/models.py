@@ -1,6 +1,4 @@
 from django.db import models
-import datetime
-from django.utils import timezone
 from smart_selects.db_fields import ChainedForeignKey
 from django.conf import settings
 
@@ -57,4 +55,5 @@ class Ticket(models.Model):
     updated_at = models.DateTimeField('updated at', auto_now=True)
 
     def __str__(self):
-        return self.title
+        str_val = "{} - {} - {}".format(self.created_by.locationType, self.problemType, self.problemSubtype)
+        return  str_val
