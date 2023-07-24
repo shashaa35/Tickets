@@ -10,11 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
-
+from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -81,8 +83,12 @@ WSGI_APPLICATION = 'ticketSite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DBNAME'),
+        'HOST': os.environ.get('DBHOST'),
+        'USER': os.environ.get('DBUSER'),
+        'PASSWORD': os.environ.get('DBPASS'),
+        'OPTIONS': {'sslmode': 'require'},
     }
 }
 
